@@ -1,0 +1,13 @@
+{
+  "/": {
+    "GET": {
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "status": 200,
+      "body": {
+        "message": "Hello World!"
+      }
+    }
+  }
+}
