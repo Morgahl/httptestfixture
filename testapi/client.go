@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -52,6 +53,10 @@ func makeJSONRequest(ctx context.Context, method, path string, reqBody interface
 
 func handleJSONResponse(resp *http.Response, respBody interface{}) error {
 	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		return fmt.Errorf("non 2XX response received: code=%d", resp.StatusCode)
+	}
 
 	if respBody != nil {
 		if err := json.NewDecoder(resp.Body).Decode(respBody); err != nil && err != io.EOF {
