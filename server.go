@@ -2,7 +2,6 @@ package httptestfixture
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -63,7 +62,6 @@ func (jm *JSONMocker) fixtureHandler(t *testing.T, fixtureName string) func(http
 				"requested path incorrect: file=%s fixture=%s fixture_path=%s request_path=%s",
 				jm.file, fixtureName, fixture.Request.Path, r.URL.Path,
 			)
-			return
 		}
 
 		if fixture.Request.Method != "" && fixture.Request.Method != r.Method {
@@ -71,7 +69,6 @@ func (jm *JSONMocker) fixtureHandler(t *testing.T, fixtureName string) func(http
 				"request path incorrect: file=%s fixture=%s fixture_method=%s request_method=%s",
 				jm.file, fixtureName, fixture.Request.Method, r.Method,
 			)
-			return
 		}
 
 		for key, value := range fixture.Request.Headers {
@@ -80,7 +77,6 @@ func (jm *JSONMocker) fixtureHandler(t *testing.T, fixtureName string) func(http
 					"request header incorrect: file=%s fixture=%s fixture_header=%s request_header=%s",
 					jm.file, fixtureName, value, reqValue,
 				)
-				return
 			}
 		}
 
@@ -92,10 +88,10 @@ func (jm *JSONMocker) fixtureHandler(t *testing.T, fixtureName string) func(http
 
 		if fixture.Response.Body != nil {
 			if err := json.NewEncoder(rw).Encode(fixture.Response.Body); err != nil {
-				panic(fmt.Sprintf(
+				t.Fatalf(
 					"error encoding body for: file=%s fixture=%s error=%s",
 					jm.file, fixtureName, err,
-				))
+				)
 			}
 		}
 	}
