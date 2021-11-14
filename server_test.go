@@ -1,41 +1,49 @@
 package httptestfixture_test
 
 import (
-	"encoding/json"
-	"net/http/httptest"
+	"context"
 	"os"
 	"testing"
 
 	"github.com/curlymon/httptestfixture"
+	"github.com/curlymon/httptestfixture/testapi"
 )
 
-var svr *httptest.Server
+var mocker *httptestfixture.JSONMocker
 
 func TestMain(m *testing.M) {
-	mocker, err := httptestfixture.New("./fixtures/server.json")
+	var err error
+	mocker, err = httptestfixture.New("./fixtures/server.json")
 	if err != nil {
 		panic(err)
 	}
-	svr = mocker.Server()
-	defer svr.Close()
 	os.Exit(m.Run())
-
 }
 
-func TestFixture(t *testing.T) {
-	resp, err := svr.Client().Get(svr.URL)
+func Test_GET_Home(t *testing.T) {
+	svr := mocker.Server(t, "get home")
+	defer svr.Close()
+
+	api := testapi.NewTestAPI(svr.Client(), svr.URL)
+
+	message, err := api.Home.List(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer resp.Body.Close()
 
-	var foo map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&foo); err != nil {
-		t.Fatal(err)
+	if message != "Hello World!" {
+		t.Fatal("resp does not contain 'message': 'Hello World!'")
 	}
+}
 
-	_, ok := foo["message"]
-	if !ok {
-		t.Fatal("resp does not contain 'message'")
+func Test_POST_Home(t *testing.T) {
+	svr := mocker.Server(t, "post home")
+	defer svr.Close()
+
+	api := testapi.NewTestAPI(svr.Client(), svr.URL)
+
+	err := api.Home.Create(context.Background(), "Hello World!")
+	if err != nil {
+		t.Fatal(err)
 	}
 }

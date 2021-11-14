@@ -1,6 +1,13 @@
 {
-  "/": {
-    "GET": {
+  "get home": {
+    "request": {
+      "path": "/",
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json"
+      }
+    },
+    "response": {
       "headers": {
         "Content-Type": "application/json"
       },
@@ -8,6 +15,18 @@
       "body": {
         "message": "Hello World!"
       }
+    }
+  },
+  "post home": {
+    "request": {
+      "path": "/",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    },
+    "response": {
+      "status": 201
     }
   }
 }
