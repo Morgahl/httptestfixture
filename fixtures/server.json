@@ -13,7 +13,25 @@
       },
       "status": 200,
       "body": {
-        "message": "Hello World!"
+        "messages": ["Hello World!"]
+      }
+    }
+  },
+  "get home with id": {
+    "request": {
+      "path": "/1",
+      "method": "GET",
+      "headers": {
+        "Accept": "application/json"
+      }
+    },
+    "response": {
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "status": 200,
+      "body": {
+        "message": "Hello 1!"
       }
     }
   },
